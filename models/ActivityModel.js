@@ -5,6 +5,10 @@ const activitySchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  description: {
+    type: String,
+    required: true
+  },
   cure: {
     type: [String],
     enum: ['Lordosis', 'Kyphosis', 'Flatback', 'Forward head'],
