@@ -1,11 +1,12 @@
 const express = require('express')
 require('dotenv').config();
 const connectMongo = require('./db')
-connectMongo();
 const cors= require('cors')
 const cookieParser = require('cookie-parser');
 
+connectMongo();
 
+const imageUpload = require('./routes/imageUploadRoutes')
 const auth = require('./routes/authRoutes')
 const userInfo = require('./routes/userInfoRoutes')
 const exercise = require('./routes/exerciseRoutes')
@@ -20,20 +21,8 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(express.static('public'));
 
-const imageUpload = require('./routes/imageUploadRoutes')
 
 
-app.get('/',(req,res)=>{ 
-  try{
-    res.status(200).json({"working": true})
-  }catch(err){
-    console.log('====================================');
-    console.log(err);
-    console.log('====================================');
-    res.status(500).json({"working": false})
-  }
-    // This route created just to check vercel deployment and may be delete in next commit
-})
 
 app.use("/api", auth)
 app.use("/api/upload", imageUpload)

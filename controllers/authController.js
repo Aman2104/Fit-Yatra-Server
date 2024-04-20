@@ -19,7 +19,6 @@ const transporter = nodemailer.createTransport({
 exports.sendOTP = async (req, res) => {
     try {
         const { email } = req.body;
-        console.log(email);
         const isAlreadyRegisteredEmail = await User.findOne({ email });
 
         if (isAlreadyRegisteredEmail) {
@@ -42,11 +41,9 @@ exports.sendOTP = async (req, res) => {
             if (error) {
                 return res.status(500).send(error.toString());
             }
-            console.log(info);
             res.status(200).send('OTP sent successfully');
         });
     } catch (err) {
-        console.error('Error in send-otp:', err);
         res.status(500).send({ "error": "Internal Server Error" });
     }
 };
@@ -55,7 +52,6 @@ exports.verifyOTP = async (req, res) => {
     try {
         const email = req.body.email;
         const userEnteredOTP = req.body.otp;
-        console.log(userEnteredOTP, otpMap[email]);
         if (otpMap[email] == userEnteredOTP) {
             res.status(200).json({isSuccessful:true});
         } else {
@@ -83,13 +79,10 @@ exports.createUser = async (req, res) => {
 
         const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '7d' })
 
-        // res.cookie('token', token, { secure: true, httpOnly: true, })
-
-        res.status(200).send(token)
+        res.status(200).send({"token":token})
 
     } catch (err) {
         res.status(400).send({ "Error": "Internal Server Error" })
-        console.log(err)
 
     }
 };
@@ -97,15 +90,12 @@ exports.createUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
-        console.log(email);
         if (!email ) {
             return res.status(400).send({ "Error": "Email is required" });
         }
-
         
         let user = await User.findOne({ email });
         if (!user) {
-            console.log(user);
             return res.status(400).send({ "Error": "Invalid username or email" });
         }
 
@@ -114,14 +104,9 @@ exports.loginUser = async (req, res) => {
             return res.status(400).send({ "Error": "Invalid password" });
         }
         const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '7d' })
-        console.log(token);
-        console.log(validPass)
-
         res.status(200).send({"token":token})
-
     } catch (err) {
         res.status(400).send({ "Error": "Internal Server Error" })
-        console.log(err)
 
     }
 };
@@ -133,6 +118,5 @@ exports.getUser = async (req, res) => {
         res.send(user);
     } catch (error) {
         res.status(500).send("Internal Server Error Occured");
-        console.log(error.message);
     }
 };
