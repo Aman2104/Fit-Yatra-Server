@@ -3,6 +3,7 @@ require('dotenv').config();
 const connectMongo = require('./db')
 const cors= require('cors')
 const cookieParser = require('cookie-parser');
+const path = require('path');
 
 connectMongo();
 
@@ -20,6 +21,7 @@ app.use(cors())
 app.use(express.json())
 app.use(cookieParser())
 app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 
 
